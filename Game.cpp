@@ -6,13 +6,15 @@
 
 //private functions
 void Game::initVars() {
+    this->endGame = false;
     this->window = nullptr;
 }
 void Game::initWindow() {
     this->videoMode = sf::VideoMode(sf::Vector2u(800, 600));
     this->window = new sf::RenderWindow(this->videoMode, "Smough Gaming");
-}
 
+    this->window->setFramerateLimit(60);
+}
 //de/constructor stuffs
 Game::Game() {
     this->initVars();
@@ -22,7 +24,14 @@ Game::~Game() {
     delete this->window;
 }
 
-//functions
+
+//  ~~~~~~~ functions ~~~~~~~
+
+//checks if window is open/running
+bool Game::running() {
+    return this->window->isOpen();
+}
+
 void Game::pollEvents() {
     // check all the window's events that were triggered since the last iteration of the loop
     while (const std::optional event = this->window->pollEvent())
@@ -37,6 +46,7 @@ void Game::pollEvents() {
         }
     }
 }
+
 void Game::update() {
     this->pollEvents();
 }
@@ -46,13 +56,9 @@ void Game::render() {
 
     //draw stuff
     this->window->clear();     // clear the window
-    // draw everything here...
+        // draw everything here...
     //this->window->draw(sprite);
-    // end the current frame
+        // end the current frame
     this->window->display();
 }
 
-//checks if window is open/running
-bool Game::running() {
-    return this->window->isOpen();
-}

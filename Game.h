@@ -10,20 +10,25 @@
 // game engine class-like for doing most of the general stuff
 class Game {
 private:
-    //vars
+    // variables
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
+    bool endGame;
 
+
+    // init functions!!!
     void initVars();
     void initWindow();
+
 public:
-    Game(); //constructor
-    ~Game(); //destructor
+    Game(); // constructor
+    ~Game(); // destructor
 
     bool running();
     void pollEvents();
     void update();
     void render();
+
 };
 
 

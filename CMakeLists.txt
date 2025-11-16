@@ -14,6 +14,7 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(Snorke main.cpp
         Game.cpp
-        Game.h)
+        Game.h
+)
 target_compile_features(Snorke PRIVATE cxx_std_17)
 target_link_libraries(Snorke PRIVATE SFML::Graphics)
