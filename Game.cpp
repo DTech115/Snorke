@@ -52,13 +52,14 @@ void Game::update() {
 }
 // renders game stuff
 void Game::render() {
-    this->window->clear();  // clears screen
+    // clear the window
+    this->window->clear();
 
-    //draw stuff
-    this->window->clear();     // clear the window
-        // draw everything here...
+    // draw everything here...
+    this->snorke.render(this->window);  // uses player class's render method to take in window for rendering
     //this->window->draw(sprite);
-        // end the current frame
+
+    // show everything
     this->window->display();
 }
 

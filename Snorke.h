@@ -1,16 +1,27 @@
 //
-// Created by charlton64 on 11/14/25.
+// Created by DT on 11/17/25.
 //
 
-#ifndef SNORKE_SNORKE_H
-#define SNORKE_SNORKE_H
+#ifndef SNORKE_H
+#define SNORKE_H
+#include <SFML/Graphics.hpp>
 
 
 class Snorke {
+private:
+	sf::RectangleShape snake;
 
+	void initVariables();
+	void initSnake();
 
+public:
+	Snorke();
+	~Snorke();
 
+	void update();
+	void render(sf::RenderTarget* targetWindow);
 };
 
 
-#endif //SNORKE_SNORKE_H
+
+#endif //SNORKE_H

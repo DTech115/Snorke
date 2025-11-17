@@ -6,6 +6,7 @@
 #define GAME_H
 
 #include <SFML/Graphics.hpp>
+#include "Snorke.h"
 
 // game engine class-like for doing most of the general stuff
 class Game {
@@ -15,6 +16,8 @@ private:
     sf::VideoMode videoMode;
     bool endGame;
 
+    //player object
+    Snorke snorke;
 
     // init functions!!!
     void initVars();
