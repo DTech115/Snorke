@@ -41,9 +41,21 @@ void Snorke::updateInput() {
         this->snake.move(sf::Vector2f(0.f, this->movementSpeed));
     }
 }
-void Snorke::update() {
-
+void Snorke::updateWindowCollision(sf::RenderTarget* targetWindow) {
     // collisions :skull:
+    sf::FloatRect bounds = this->snake.getGlobalBounds();
+
+    //checks if the snake's x position is less than the left side of screen
+    if (bounds.position.x <= 0.f) {
+        this->snake.setPosition(sf::Vector2f(0.f, bounds.position.y));
+    }
+    else if (bounds.position.x + bounds.size.x >= targetWindow->getSize().x) {
+        this->snake.setPosition(sf::Vector2f(targetWindow->getSize().x - bounds.size.x, bounds.position.y));
+    }
+}
+void Snorke::update(sf::RenderTarget* targetWindow) {
+
+    this->updateWindowCollision(targetWindow);
 
     this->updateInput();
 }

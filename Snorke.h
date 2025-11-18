@@ -20,7 +20,8 @@ public:
 	~Snorke();
 
 	void updateInput();
-	void update();
+	void updateWindowCollision(sf::RenderTarget* targetWindow);
+	void update(sf::RenderTarget* targetWindow);
 	void render(sf::RenderTarget* targetWindow);
 };
 

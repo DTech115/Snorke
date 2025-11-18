@@ -49,7 +49,7 @@ void Game::pollEvents() {
 
 void Game::update() {
     this->pollEvents();
-    this->snorke.update();
+    this->snorke.update(this->window);
 }
 // renders game stuff
 void Game::render() {
