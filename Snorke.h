@@ -10,14 +10,16 @@
 class Snorke {
 private:
 	sf::RectangleShape snake;
+	float movementSpeed;
 
 	void initVariables();
 	void initSnake();
 
 public:
-	Snorke();
+	Snorke(float x = 0.f, float y = 0.f);
 	~Snorke();
 
+	void updateInput();
 	void update();
 	void render(sf::RenderTarget* targetWindow);
 };
