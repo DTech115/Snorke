@@ -11,6 +11,8 @@ void Game::initVars() {
 }
 void Game::initWindow() {
     this->videoMode = sf::VideoMode(sf::Vector2u(800, 600));
+        // Vector2u & Vector2f is just what SFML "3" requires when using number pairs.
+        // Just pretend it only says "sf::setPosition(50, 50)" for clarity when you read it
     this->window = new sf::RenderWindow(this->videoMode, "Smough Gaming");
 
     this->window->setFramerateLimit(60);
