@@ -15,9 +15,7 @@ void Snorke::initSnake() {
 }
 
 Snorke::Snorke(float x, float y) {
-
     this->snake.setPosition(sf::Vector2f(x, y));
-
     this->initVariables();
     this->initSnake();
 }
@@ -72,11 +70,8 @@ void Snorke::updateWindowCollision(sf::RenderTarget* targetWindow) {
 
 // updates the given window every frame by calling the other two updates
 void Snorke::update(sf::RenderTarget* targetWindow) {
-
     this->updateInput();
-
     this->updateWindowCollision(targetWindow);
-
 }
 
 // draws everything to the screen
