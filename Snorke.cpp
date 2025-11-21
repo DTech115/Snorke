@@ -10,7 +10,7 @@ void Snorke::initVariables() {
 }
 void Snorke::initSnake() {
 
-    this->snake.setPosition(sf::Vector2f(400.f, 300.f));
+    this->snake.setPosition(sf::Vector2f(400.f, 500.f));
     this->snake.setSize(sf::Vector2f(30.f, 30.f));
     this->snake.setFillColor(sf::Color::Green);
 
@@ -127,5 +127,16 @@ void Snorke::render(sf::RenderTarget* targetWindow) {
 
     for (auto segment : body) {
         targetWindow->draw(segment);
+    }
+}
+
+void Snorke::teleportSnake(sf::Vector2f(pos)) {
+    this->snake.setPosition(sf::Vector2f(pos));
+
+    this->bodyHistory.clear();
+    this->bodyHistory.push_back(pos);
+
+    for (auto segment : body) {
+        segment.setPosition(pos);
     }
 }

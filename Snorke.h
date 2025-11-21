@@ -30,6 +30,7 @@ public:
 	void updateSnakeMovement();
 	void update(sf::RenderTarget* targetWindow);
 	void render(sf::RenderTarget* targetWindow);
+	void teleportSnake(sf::Vector2f(pos));
 };
 
 

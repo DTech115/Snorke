@@ -47,8 +47,8 @@ void Game::pollEvents() {
     // check all the window's events that were triggered since the last iteration of the loop
     while (const std::optional event = this->window->pollEvent())
     {
-        sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);//tracking and printing mouse position for testing purposes
-        std::cout << "Mouse X: " << mousePos.x << " Y: " << mousePos.y << "\n";
+        //sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);//tracking and printing mouse position for testing purposes
+        //std::cout << "Mouse X: " << mousePos.x << " Y: " << mousePos.y << "\n";
         // "close requested" event: we close the window
         if (event->is<sf::Event::Closed>()) {
             this->window->close();
@@ -63,7 +63,9 @@ void Game::pollEvents() {
 void Game::update() {
     this->pollEvents();
     this->snorke.update(this->window);
+
     imageGeneratorLive();
+
     sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);
     bool mousePressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
     bool clickedThisFrame = (mousePressed && !mouseWasPressed);
@@ -73,19 +75,23 @@ void Game::update() {
 
         case(startRoom):
             if(clickedThisFrame && mousePos.x > 750 && mousePos.y > 500) {
+                snorke.teleportSnake({50.f, 400.f});
                 this->room = secondRoom;
                 this->window->setSize({800, 800});
                 this->window->setTitle("second Room");
+
             }
             break;
 
         case(secondRoom):
             if (clickedThisFrame && mousePos.x < 25 && mousePos.y > 500) {
+                snorke.teleportSnake({750.f, 400.f});
                 this->room = startRoom;
                 this->window->setSize({800, 600});
                 this->window->setTitle("First Room");
             }
             if (clickedThisFrame && mousePos.x > 775 && mousePos.y > 500) {
+                snorke.teleportSnake({50.f, 400.f});
                 this->room = thirdRoom;
                 this->window->setSize({800, 600});
                 this->window->setTitle("Final Room");
@@ -94,6 +100,7 @@ void Game::update() {
 
         case(thirdRoom):
             if (clickedThisFrame && mousePos.x < 25 && mousePos.y > 500) {
+                snorke.teleportSnake({750.f, 400.f});
                 this->room = secondRoom;
                 this->window->setSize(sf::Vector2u(800, 800));
                 this->window->setTitle("Im a snake");
