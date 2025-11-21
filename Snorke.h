@@ -9,7 +9,13 @@
 
 class Snorke {
 private:
+
+	//snake parts
 	sf::RectangleShape snake;
+	std::vector<sf::RectangleShape> body;
+	std::vector<sf::Vector2f> bodyHistory;
+	sf::Vector2f lastSnakePosition;
+
 	float movementSpeed;
 
 	void initVariables();
@@ -21,6 +27,7 @@ public:
 
 	void updateInput();
 	void updateWindowCollision(sf::RenderTarget* targetWindow);
+	void updateSnakeMovement();
 	void update(sf::RenderTarget* targetWindow);
 	void render(sf::RenderTarget* targetWindow);
 };
