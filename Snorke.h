@@ -31,6 +31,8 @@ public:
 	void update(sf::RenderTarget* targetWindow);
 	void render(sf::RenderTarget* targetWindow);
 	void teleportSnake(sf::Vector2f(pos));
+
+	sf::FloatRect getSnorkeBounds() { return this->snake.getGlobalBounds(); }
 };
 
 

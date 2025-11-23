@@ -12,9 +12,12 @@ void Game::initVars() {
     this->window = nullptr;
 }
 void Game::initWindow() {
-    this->videoMode = sf::VideoMode(sf::Vector2u(800, 600));
+    this->videoMode = sf::VideoMode({800, 600});
         // Vector2u & Vector2f is just what SFML "3" requires when using number pairs.
         // Just pretend it only says "sf::setPosition(50, 50)" for clarity when you read it
+
+        // nvm you can just use {x, y} instead fml
+
     this->window = new sf::RenderWindow(this->videoMode, "First Room");
     this->window->setFramerateLimit(60);
 }
@@ -32,6 +35,8 @@ Game::Game() {
 }
 Game::~Game() {
     delete this->window;
+
+    delete sprite;  // blud almost caused a memory leak by not adding this
 }
 
 
@@ -62,7 +67,6 @@ void Game::pollEvents() {
 
 void Game::update() {
     this->pollEvents();
-    this->snorke.update(this->window);
 
     imageGeneratorLive();
 
@@ -71,26 +75,34 @@ void Game::update() {
     bool clickedThisFrame = (mousePressed && !mouseWasPressed);
     mouseWasPressed = mousePressed;
 
+    sf::FloatRect snakeBounds = this->snorke.getSnorkeBounds();
+    sf::FloatRect doorToSecond({750.f, 500.f}, {50.f, 100.f});
+    sf::FloatRect doorLeft({0.f,   380.f}, {25.f, 300.f});
+    sf::FloatRect doorRight({775.f, 380.f}, {25.f, 295.f});
+    sf::FloatRect door({0.f, 500.f}, {25.f, 100.f});
+
     switch (this->room ) {
 
         case(startRoom):
-            if(clickedThisFrame && mousePos.x > 750 && mousePos.y > 500) {
+
+            if(snakeBounds.findIntersection(doorToSecond)) {
                 snorke.teleportSnake({50.f, 400.f});
                 this->room = secondRoom;
-                this->window->setSize({800, 800});
-                this->window->setTitle("second Room");
+                this->window->setSize({800, 600});
+                this->window->setTitle("Second Room");
 
             }
             break;
 
         case(secondRoom):
-            if (clickedThisFrame && mousePos.x < 25 && mousePos.y > 500) {
+
+            if (snakeBounds.findIntersection(doorLeft)) {
                 snorke.teleportSnake({750.f, 400.f});
                 this->room = startRoom;
                 this->window->setSize({800, 600});
                 this->window->setTitle("First Room");
             }
-            if (clickedThisFrame && mousePos.x > 775 && mousePos.y > 500) {
+            if (snakeBounds.findIntersection(doorRight)) {
                 snorke.teleportSnake({50.f, 400.f});
                 this->room = thirdRoom;
                 this->window->setSize({800, 600});
@@ -99,28 +111,28 @@ void Game::update() {
             break;
 
         case(thirdRoom):
-            if (clickedThisFrame && mousePos.x < 25 && mousePos.y > 500) {
+
+            if (snakeBounds.findIntersection(door)) {
                 snorke.teleportSnake({750.f, 400.f});
                 this->room = secondRoom;
-                this->window->setSize(sf::Vector2u(800, 800));
+                this->window->setSize(sf::Vector2u(800, 600));
                 this->window->setTitle("Im a snake");
             }
             break;
     }
-    if (this->room == secondRoom) {
-        sprite->setPosition({300,300});
-    }
+    this->snorke.update(this->window);
+
+    imageGeneratorLive();
 }
 // renders game stuff
 void Game::render() {
     this->window->clear(); // clears screen (no it doesnt DT clearing the screen is a myth)
-
+                            // shhh don't let them know that Charlie
     switch (this->room) {
 
         case startRoom: {
+
             this->snorke.render(this->window);
-            this->window->draw(*sprite);
-            sprite->setPosition({300,300});
 
             sf::RectangleShape rectangle({50,100});
             rectangle.setPosition({750,500});
@@ -153,7 +165,6 @@ void Game::render() {
         }
         case thirdRoom:
             this->snorke.render(this->window);
-            this->window->draw(*sprite);
             sf::RectangleShape rectangle2({25,100});
             rectangle2.setPosition({0,500});
             rectangle2.setFillColor(sf::Color::Green);
@@ -165,6 +176,7 @@ void Game::render() {
 
     //this->window->draw(sprite);
     this->window->display();
+
 }
 
 void Game::imageGeneratorLive() {
