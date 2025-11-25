@@ -8,7 +8,7 @@
 
 //private functions
 void Game::initVars() {
-    this->endGame = false;
+    this->gameOver = false;
     this->window = nullptr;
 }
 void Game::initWindow() {
@@ -32,11 +32,23 @@ Game::Game() {
     }
     rectSourceSprite = sf::IntRect({0,0},{100, 100});
     sprite = new sf::Sprite(texture, rectSourceSprite);
+
+    // game over text stuff
+    if (!gameOverFont.openFromFile("DFPOCOC.TTF")) {
+        std::cerr << "Failed to load";
+    }
+    gameOverText = new sf::Text(gameOverFont);
+
+    gameOverText->setFont(gameOverFont);
+    gameOverText->setString(" Y O U    D I E D ");
+    gameOverText->setCharacterSize(32);
+    gameOverText->setFillColor(sf::Color::Red);
+    gameOverText->setPosition({400.f, 300.f});
 }
 Game::~Game() {
     delete this->window;
-
     delete sprite;  // blud almost caused a memory leak by not adding this
+    delete gameOverText;
 }
 
 
@@ -66,27 +78,42 @@ void Game::pollEvents() {
 }
 
 void Game::update() {
-    this->pollEvents();
 
-    imageGeneratorLive();
-
-    sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);
-    bool mousePressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-    bool clickedThisFrame = (mousePressed && !mouseWasPressed);
-    mouseWasPressed = mousePressed;
-
+    // coordinate bounds for each thing on screen
     sf::FloatRect snakeBounds = this->snorke.getSnorkeBounds();
+    sf::FloatRect spriteBounds = this->sprite->getGlobalBounds();
     sf::FloatRect doorToSecond({750.f, 500.f}, {50.f, 100.f});
     sf::FloatRect doorLeft({0.f,   380.f}, {25.f, 300.f});
     sf::FloatRect doorRight({775.f, 380.f}, {25.f, 295.f});
     sf::FloatRect door({0.f, 500.f}, {25.f, 100.f});
 
+
+    this->pollEvents();
+
+    // if game is over, close screen
+    if (gameOver) {
+        this->window->close();
+        return;
+    }
+
+    // move snake
+    this->snorke.update(this->window);
+
+    // check if buzzsaw hit
+    if (room == secondRoom) {
+        if (!gameOver && snakeBounds.findIntersection(spriteBounds)) {
+            gameOver = true;
+        }
+    }
+
+    // door collisions & loading
     switch (this->room ) {
 
         case(startRoom):
 
             if(snakeBounds.findIntersection(doorToSecond)) {
-                snorke.teleportSnake({50.f, 400.f});
+                float y = snakeBounds.position.y;
+                snorke.teleportSnake({50.f, y});
                 this->room = secondRoom;
                 this->window->setSize({800, 600});
                 this->window->setTitle("Second Room");
@@ -97,13 +124,15 @@ void Game::update() {
         case(secondRoom):
 
             if (snakeBounds.findIntersection(doorLeft)) {
-                snorke.teleportSnake({750.f, 400.f});
+                float y = snakeBounds.position.y;
+                snorke.teleportSnake({720.f, y});
                 this->room = startRoom;
                 this->window->setSize({800, 600});
                 this->window->setTitle("First Room");
             }
             if (snakeBounds.findIntersection(doorRight)) {
-                snorke.teleportSnake({50.f, 400.f});
+                float y = snakeBounds.position.y;
+                snorke.teleportSnake({40.f, y});
                 this->room = thirdRoom;
                 this->window->setSize({800, 600});
                 this->window->setTitle("Final Room");
@@ -113,14 +142,14 @@ void Game::update() {
         case(thirdRoom):
 
             if (snakeBounds.findIntersection(door)) {
-                snorke.teleportSnake({750.f, 400.f});
+                float y = snakeBounds.position.y;
+                snorke.teleportSnake({720.f, y});
                 this->room = secondRoom;
                 this->window->setSize(sf::Vector2u(800, 600));
-                this->window->setTitle("Im a snake");
+                this->window->setTitle("Second Room");
             }
             break;
     }
-    this->snorke.update(this->window);
 
     imageGeneratorLive();
 }
@@ -128,6 +157,7 @@ void Game::update() {
 void Game::render() {
     this->window->clear(); // clears screen (no it doesnt DT clearing the screen is a myth)
                             // shhh don't let them know that Charlie
+
     switch (this->room) {
 
         case startRoom: {
@@ -177,6 +207,12 @@ void Game::render() {
     //this->window->draw(sprite);
     this->window->display();
 
+    // check if gameover to draw text
+    if (gameOver) {
+        this->window->draw(*gameOverText);
+        this->window->display();
+        sleep(sf::seconds(2.f));
+    }
 }
 
 void Game::imageGeneratorLive() {

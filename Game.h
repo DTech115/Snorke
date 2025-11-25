@@ -16,14 +16,16 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
 
-    sf::Vector2i mousePos;
     sf::Texture texture;
     sf::Sprite* sprite;
     sf::IntRect rectSourceSprite;
     sf::Clock clock;
 
-    bool mouseWasPressed = false;
-    bool endGame;
+    // death text stuff
+    sf::Font gameOverFont;
+    sf::Text* gameOverText;
+
+    bool gameOver;
 
     //objects
     Snorke snorke;
