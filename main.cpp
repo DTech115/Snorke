@@ -8,7 +8,7 @@ int main() {
     //
     // sprite.setScale({0.1f, 0.1f});  // it's so peak...
 
-    // INIT GAME ENGINE!!!
+    // INIT GAME ENGINE!!!!
     Game game;
 
     // ~~~~GAME LOOP~~~~
