@@ -131,12 +131,18 @@ void Snorke::render(sf::RenderTarget* targetWindow) {
 }
 
 void Snorke::teleportSnake(sf::Vector2f(pos)) {
-    this->snake.setPosition(sf::Vector2f(pos));
+    this->snake.setPosition(pos);
 
     this->bodyHistory.clear();
-    this->bodyHistory.push_back(pos);
 
-    for (auto segment : body) {
-        segment.setPosition(pos);
+    // this->bodyHistory.push_back(pos);
+    //
+    // for (auto segment : body) {
+    //     segment.setPosition(pos);
+    // }
+
+    for (int i = 0; i < body.size() + 10; i++) {
+        bodyHistory.push_back(pos);
+        body[i].setPosition(pos);  // also snap body segments immediately
     }
 }
