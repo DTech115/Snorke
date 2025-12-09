@@ -143,13 +143,13 @@ void Game::update() {
 
             }
 
-        // check if coins already taken/collided with
-        if (coinCheck[0] == true) {
-            if (snakeBounds.findIntersection(coins[0].getGlobalBounds())) {
-                snorke.scoreUp();
-                coinCheck[0] = false;
+            // check if coins already taken/collided with
+            if (coinCheck[0] == true) {
+                if (snakeBounds.findIntersection(coins[0].getGlobalBounds())) {
+                    snorke.scoreUp();
+                    coinCheck[0] = false;
+                }
             }
-        }
             break;
 
         case(secondRoom):
@@ -167,6 +167,15 @@ void Game::update() {
                 this->room = thirdRoom;
                 this->window->setSize({800, 600});
                 //this->window->setTitle("Final Room");
+            }
+
+
+            // check if coins already taken/collided with
+            if (coinCheck[1] == true) {
+                if (snakeBounds.findIntersection(coins[1].getGlobalBounds())) {
+                    snorke.scoreUp();
+                    coinCheck[1] = false;
+                }
             }
             break;
 
@@ -186,6 +195,13 @@ void Game::update() {
                 this->window->setSize({800, 600});
                 //this->window->setTitle("Final Room");
             }
+            // check if coins already taken/collided with
+            if (coinCheck[2] == true) {
+                if (snakeBounds.findIntersection(coins[2].getGlobalBounds())) {
+                    snorke.scoreUp();
+                    coinCheck[2] = false;
+                }
+            }
             break;
 
         case(topRoom):
@@ -195,6 +211,21 @@ void Game::update() {
                 snorke.teleportSnake({x, 20.f});
                 this->room = thirdRoom;
                 this->window->setSize({800, 600});
+            }
+
+            // check if coins already taken/collided with
+            if (coinCheck[3] == true) {
+                if (snakeBounds.findIntersection(coins[3].getGlobalBounds())) {
+                    snorke.scoreUp();
+                    coinCheck[3] = false;
+                }
+            }
+            // check if coins already taken/collided with
+            if (coinCheck[4] == true) {
+                if (snakeBounds.findIntersection(coins[4].getGlobalBounds())) {
+                    snorke.scoreUp();
+                    coinCheck[4] = false;
+                }
             }
             break;
     }
@@ -247,6 +278,12 @@ void Game::render() {
             rectangle2.setOutlineThickness(-3);
             rectangle2.setOutlineColor(sf::Color::Blue);
             this->window->draw(rectangle2);
+
+            // check if coin already taken, display if not
+            if (coinCheck[1] == true) {
+                this->coins[1].setPosition({400.f, 30.f});
+                this->window->draw(this->coins[1]);
+            }
             break;
 
         }
@@ -259,11 +296,30 @@ void Game::render() {
             rectangle2.setOutlineColor(sf::Color::Blue);
             this->window->draw(rectangle2);
             this->window->draw(finalDoor);
+
+            // check if coin already taken, display if not
+            if (coinCheck[2] == true) {
+                this->coins[2].setPosition({700.f, 60.f});
+                this->window->draw(this->coins[2]);
+            }
+
             break;
         }
         case topRoom: {
-            this->snorke.render(this->window);
             this->window->draw(finalDoorBack);
+
+            // check if coin already taken, display if not
+            if (coinCheck[3] == true) {
+                this->coins[3].setPosition({200.f, 300.f});
+                this->window->draw(this->coins[3]);
+            }
+            // check if coin already taken, display if not
+            if (coinCheck[4] == true) {
+                this->coins[4].setPosition({600.f, 300.f});
+                this->window->draw(this->coins[4]);
+            }
+            this->snorke.render(this->window);
+
             break;
         }
     }
