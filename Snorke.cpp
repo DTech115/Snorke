@@ -39,6 +39,8 @@ Snorke::Snorke(float x, float y) {
 
     this->initVariables();
     this->initSnake();
+
+    this->score = 0;
 }
 
 Snorke::~Snorke() {

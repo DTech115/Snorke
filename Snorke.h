@@ -17,6 +17,7 @@ private:
 	sf::Vector2f lastSnakePosition;
 
 	float movementSpeed;
+	int score;
 
 	void initVariables();
 	void initSnake();

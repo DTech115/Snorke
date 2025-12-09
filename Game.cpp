@@ -18,7 +18,7 @@ void Game::initWindow() {
 
         // nvm you can just use {x, y} instead fml
 
-    this->window = new sf::RenderWindow(this->videoMode, "First Room");
+    this->window = new sf::RenderWindow(this->videoMode, "Snorke");
     this->window->setFramerateLimit(60);
 }
 //de/constructor stuffs
@@ -32,6 +32,15 @@ Game::Game() {
     }
     rectSourceSprite = sf::IntRect({0,0},{100, 100});
     sprite = new sf::Sprite(texture, rectSourceSprite);
+
+    // final door
+    this->finalDoor.setPosition({0.f, 0.f});
+    this->finalDoor.setSize({800.f, 20.f});
+    this->finalDoor.setFillColor(sf::Color::Yellow);
+    // final door back
+    this->finalDoorBack.setPosition({0.f, 580.f});
+    this->finalDoorBack.setSize({800.f, 580.f});
+    this->finalDoorBack.setFillColor(sf::Color::Yellow);
 
     // game over text stuff
     if (!gameOverFont.openFromFile("DFPOCOC.TTF")) {
@@ -86,6 +95,7 @@ void Game::update() {
     sf::FloatRect doorLeft({0.f,   380.f}, {25.f, 300.f});
     sf::FloatRect doorRight({775.f, 380.f}, {25.f, 295.f});
     sf::FloatRect door({0.f, 500.f}, {25.f, 100.f});
+    sf::FloatRect doorTop({0.f, 0.f}, {800.f, 50.f});
 
 
     this->pollEvents();
@@ -116,7 +126,7 @@ void Game::update() {
                 snorke.teleportSnake({50.f, y});
                 this->room = secondRoom;
                 this->window->setSize({800, 600});
-                this->window->setTitle("Second Room");
+                //this->window->setTitle("Second Room");
 
             }
             break;
@@ -128,14 +138,14 @@ void Game::update() {
                 snorke.teleportSnake({720.f, y});
                 this->room = startRoom;
                 this->window->setSize({800, 600});
-                this->window->setTitle("First Room");
+                //this->window->setTitle("First Room");
             }
             if (snakeBounds.findIntersection(doorRight)) {
                 float y = snakeBounds.position.y;
                 snorke.teleportSnake({40.f, y});
                 this->room = thirdRoom;
                 this->window->setSize({800, 600});
-                this->window->setTitle("Final Room");
+                //this->window->setTitle("Final Room");
             }
             break;
 
@@ -146,7 +156,24 @@ void Game::update() {
                 snorke.teleportSnake({720.f, y});
                 this->room = secondRoom;
                 this->window->setSize(sf::Vector2u(800, 600));
-                this->window->setTitle("Second Room");
+                //this->window->setTitle("Second Room");
+            }
+            if (snakeBounds.findIntersection(finalDoor.getGlobalBounds())) {
+                float x = snakeBounds.position.x;
+                snorke.teleportSnake({x, 550.f});
+                this->room = topRoom;
+                this->window->setSize({800, 600});
+                //this->window->setTitle("Final Room");
+            }
+            break;
+
+        case(topRoom):
+
+            if (snakeBounds.findIntersection(finalDoorBack.getGlobalBounds())) {
+                float x = snakeBounds.position.x;
+                snorke.teleportSnake({x, 20.f});
+                this->room = thirdRoom;
+                this->window->setSize({800, 600});
             }
             break;
     }
@@ -156,7 +183,7 @@ void Game::update() {
 // renders game stuff
 void Game::render() {
     this->window->clear(); // clears screen (no it doesnt DT clearing the screen is a myth)
-                            // shhh don't let them know that Charlie
+                            // shhh don't let them know that Charlemagne
 
     switch (this->room) {
 
@@ -173,9 +200,12 @@ void Game::render() {
             break;
         }
         case secondRoom: {
-            this->snorke.render(this->window);
+            // now draws saw before window so it doesn't frikin appear
+            // at the top for a split second
             this->window->draw(*sprite);
             sprite->setPosition({300,300});
+
+            this->snorke.render(this->window);
 
             sf::RectangleShape rectangle({25,300});
             rectangle.setPosition({0,380});
@@ -193,7 +223,7 @@ void Game::render() {
             break;
 
         }
-        case thirdRoom:
+        case thirdRoom: {
             this->snorke.render(this->window);
             sf::RectangleShape rectangle2({25,100});
             rectangle2.setPosition({0,500});
@@ -201,7 +231,14 @@ void Game::render() {
             rectangle2.setOutlineThickness(-3);
             rectangle2.setOutlineColor(sf::Color::Blue);
             this->window->draw(rectangle2);
+            this->window->draw(finalDoor);
             break;
+        }
+        case topRoom: {
+            this->snorke.render(this->window);
+            this->window->draw(finalDoorBack);
+            break;
+        }
     }
 
     //this->window->draw(sprite);

@@ -9,7 +9,7 @@
 #include "Snorke.h"
 
 //game engine class like for doing most of the general stuff
-enum Rooms { startRoom, secondRoom, thirdRoom };
+enum Rooms { startRoom, secondRoom, thirdRoom, topRoom };
 class Game {
 private:
     // variables
@@ -24,6 +24,10 @@ private:
     // death text stuff
     sf::Font gameOverFont;
     sf::Text* gameOverText;
+
+    // last door shape
+    sf::RectangleShape finalDoor;
+    sf::RectangleShape finalDoorBack;
 
     bool gameOver;
 

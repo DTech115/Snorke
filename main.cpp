@@ -2,11 +2,8 @@
 
 int main() {
 
-    // //create stuff
-    // sf::Texture texture("smough.png");
-    // sf::Sprite sprite(texture);
-    //
-    // sprite.setScale({0.1f, 0.1f});  // it's so peak...
+
+    // it's so peak...
 
     // INIT GAME ENGINE!!!
     Game game;
