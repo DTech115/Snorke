@@ -142,9 +142,10 @@ void Snorke::teleportSnake(sf::Vector2f(pos)) {
     // for (auto segment : body) {
     //     segment.setPosition(pos);
     // }
-
     for (int i = 0; i < body.size() + 10; i++) {
         bodyHistory.push_back(pos);
+    }
+    for (int i = 0; i < body.size(); i++) {
         body[i].setPosition(pos);  // also snap body segments immediately
     }
 }
