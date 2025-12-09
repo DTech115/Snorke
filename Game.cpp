@@ -9,6 +9,9 @@
 //private functions
 void Game::initVars() {
     this->gameOver = false;
+    this->gameWin = false;
+    this->allCoinsCollected = false;
+
     this->window = nullptr;
 }
 void Game::initWindow() {
@@ -16,7 +19,7 @@ void Game::initWindow() {
         // Vector2u & Vector2f is just what SFML "3" requires when using number pairs.
         // Just pretend it only says "sf::setPosition(50, 50)" for clarity when you read it
 
-        // nvm you can just use {x, y} instead fml
+        // nvm you can just use {x, y} instead rip
 
     this->window = new sf::RenderWindow(this->videoMode, "Snorke");
     this->window->setFramerateLimit(60);
@@ -44,6 +47,12 @@ Game::Game() {
     this->finalDoorBack.setSize({800.f, 580.f});
     this->finalDoorBack.setFillColor(sf::Color::Yellow);
 
+    this->exitDoor.setPosition({300.f, 550.f});
+    this->exitDoor.setSize({300.f, 50.f});
+    this->exitDoor.setFillColor(sf::Color::White);
+    this->exitDoor.setOutlineThickness(3);
+    this->exitDoor.setOutlineColor(sf::Color::Yellow);
+
     for (int i = 0; i < 5; i++) {
         sf::CircleShape coin(15.f);
         coin.setFillColor(sf::Color::Yellow);
@@ -60,25 +69,32 @@ Game::Game() {
     }
     gameOverText = new sf::Text(gameFont);
     scoreText = new sf::Text(gameFont);
+    winText = new sf::Text(gameFont);
 
     // game over text stuff
-    gameOverText->setFont(gameFont);
     gameOverText->setString(" Y O U    D I E D ");
-    gameOverText->setCharacterSize(32);
+    gameOverText->setCharacterSize(64);
     gameOverText->setFillColor(sf::Color::Red);
-    gameOverText->setPosition({400.f, 300.f});
+    gameOverText->setPosition({150.f, 300.f});
 
     // score text stuff
-    scoreText->setFont(gameFont);
     scoreText->setCharacterSize(24);
     scoreText->setFillColor(sf::Color::White);
     scoreText->setPosition({680.f, 10.f});
+
+    // win text
+    winText->setString(" V I C T O R Y   A C H I E V E D ");
+    winText->setCharacterSize(48);
+    winText->setFillColor({255, 189, 0});
+    winText->setPosition({10.f, 300.f});
+
 }
 Game::~Game() {
     delete this->window;
     delete sprite;  // blud almost caused a memory leak by not adding this
     delete gameOverText;
     delete scoreText;
+    delete winText;
 }
 
 
@@ -117,16 +133,17 @@ void Game::update() {
     sf::FloatRect doorLeft({0.f,   380.f}, {25.f, 300.f});
     sf::FloatRect doorRight({775.f, 380.f}, {25.f, 295.f});
     sf::FloatRect door({0.f, 500.f}, {25.f, 100.f});
-    sf::FloatRect doorTop({0.f, 0.f}, {800.f, 50.f});
 
 
     this->pollEvents();
 
     // if game is over, close screen
-    if (gameOver) {
+    if (gameOver || gameWin) {
+        sleep(sf::seconds(2));
         this->window->close();
         return;
     }
+
 
     // move snake
     this->snorke.update(this->window);
@@ -135,6 +152,16 @@ void Game::update() {
     if (room == secondRoom) {
         if (!gameOver && snakeBounds.findIntersection(spriteBounds)) {
             gameOver = true;
+        }
+    }
+
+    // check if exit unlocked
+    if (snorke.getScore() == 5) {
+        this->allCoinsCollected = true;
+        if (room == thirdRoom) {
+            if (!gameWin && snakeBounds.findIntersection(exitDoor.getGlobalBounds())) {
+                gameWin = true;
+            }
         }
     }
 
@@ -271,8 +298,7 @@ void Game::render() {
             break;
         }
         case secondRoom: {
-            // now draws saw before window so it doesn't frikin appear
-            // at the top for a split second
+
             this->window->draw(*sprite);
             sprite->setPosition({300,300});
 
@@ -310,6 +336,11 @@ void Game::render() {
             this->window->draw(rectangle2);
             this->window->draw(finalDoor);
 
+            // exit door if all coins collected
+            if (allCoinsCollected == true) {
+                this->window->draw(exitDoor);
+            }
+
             // check if coin already taken, display if not
             if (coinCheck[2] == true) {
                 this->coins[2].setPosition({700.f, 60.f});
@@ -341,10 +372,11 @@ void Game::render() {
 
     // check if gameover to draw text
     if (gameOver) {
-        //std::cout << "Score: " << snorke.getScore() << std::endl;
         this->window->draw(*gameOverText);
-        this->window->display();
-        sleep(sf::seconds(2.f));
+    }
+
+    if (gameWin) {
+        this->window->draw(*winText);
     }
 
     //this->window->draw(sprite);

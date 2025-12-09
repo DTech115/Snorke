@@ -25,6 +25,7 @@ private:
     // last door shape [ngl we should've optimized exits like this if we had time
     sf::RectangleShape finalDoor;
     sf::RectangleShape finalDoorBack;
+    sf::RectangleShape exitDoor;
 
     // coin collection
     std::vector<sf::CircleShape> coins;
@@ -34,8 +35,11 @@ private:
     sf::Font gameFont;
     sf::Text* gameOverText;
     sf::Text* scoreText;
+    sf::Text* winText;
 
     bool gameOver;
+    bool allCoinsCollected;
+    bool gameWin;
 
     //objects
     Snorke snorke;
