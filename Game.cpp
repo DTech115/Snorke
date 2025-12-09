@@ -12,6 +12,9 @@ void Game::initVars() {
     this->gameWin = false;
     this->allCoinsCollected = false;
 
+    sawSpeed = {5.f, 0.f};
+    this->moveRight = false;
+
     this->window = nullptr;
 }
 void Game::initWindow() {
@@ -37,6 +40,7 @@ Game::Game() {
     }
     rectSourceSprite = sf::IntRect({0,0},{100, 100});
     sprite = new sf::Sprite(texture, rectSourceSprite);
+    sprite->setPosition({300.f, 300.f});
 
     // shape loading
     this->finalDoor.setPosition({0.f, 0.f});
@@ -148,8 +152,23 @@ void Game::update() {
     // move snake
     this->snorke.update(this->window);
 
-    // check if buzzsaw hit
+    // MOVE THE BUZZSAW AROUDN & check if it hits you
     if (room == secondRoom) {
+        sf::Vector2f sawPos = sprite->getPosition();
+
+        if (moveRight) {
+            sawPos.x += sawSpeed.x;
+            if (sawPos.x + sprite->getGlobalBounds().size.x >= 775.f) {
+                moveRight = false;
+            }
+        } else {
+            sawPos.x -= sawSpeed.x;
+            if (sawPos.x <= 25.f) {
+                moveRight = true;
+            }
+        }
+        sprite->setPosition(sawPos);
+
         if (!gameOver && snakeBounds.findIntersection(spriteBounds)) {
             gameOver = true;
         }
@@ -300,7 +319,6 @@ void Game::render() {
         case secondRoom: {
 
             this->window->draw(*sprite);
-            sprite->setPosition({300,300});
 
             this->snorke.render(this->window);
 

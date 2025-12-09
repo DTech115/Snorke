@@ -16,11 +16,14 @@ private:
     sf::RenderWindow* window;
     sf::VideoMode videoMode;
 
+    // saw stuff
     sf::Texture texture;
     sf::Sprite* sprite;
     sf::IntRect rectSourceSprite;
     sf::Clock clock;
-
+    // saw movement
+    sf::Vector2f sawSpeed;
+    bool moveRight;
 
     // last door shape [ngl we should've optimized exits like this if we had time
     sf::RectangleShape finalDoor;
