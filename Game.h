@@ -30,10 +30,10 @@ private:
     std::vector<sf::CircleShape> coins;
     std::vector<bool> coinCheck;
 
-    // death text stuff
-    sf::Font gameOverFont;
+    // text stuff, make sure to DELETE IN DECONSTRUCTOR CHARLIE
+    sf::Font gameFont;
     sf::Text* gameOverText;
-
+    sf::Text* scoreText;
 
     bool gameOver;
 

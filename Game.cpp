@@ -54,22 +54,31 @@ Game::Game() {
         this->coinCheck.push_back(true);
     }
 
-    // game over text stuff
-    if (!gameOverFont.openFromFile("DFPOCOC.TTF")) {
+    // font stuff
+    if (!gameFont.openFromFile("DFPOCOC.TTF")) {
         std::cerr << "Failed to load";
     }
-    gameOverText = new sf::Text(gameOverFont);
+    gameOverText = new sf::Text(gameFont);
+    scoreText = new sf::Text(gameFont);
 
-    gameOverText->setFont(gameOverFont);
+    // game over text stuff
+    gameOverText->setFont(gameFont);
     gameOverText->setString(" Y O U    D I E D ");
     gameOverText->setCharacterSize(32);
     gameOverText->setFillColor(sf::Color::Red);
     gameOverText->setPosition({400.f, 300.f});
+
+    // score text stuff
+    scoreText->setFont(gameFont);
+    scoreText->setCharacterSize(24);
+    scoreText->setFillColor(sf::Color::White);
+    scoreText->setPosition({680.f, 10.f});
 }
 Game::~Game() {
     delete this->window;
     delete sprite;  // blud almost caused a memory leak by not adding this
     delete gameOverText;
+    delete scoreText;
 }
 
 
@@ -230,10 +239,14 @@ void Game::update() {
             break;
     }
 
+    // increase score
+    scoreText->setString("Score: " + std::to_string(snorke.getScore()));
+
     imageGeneratorLive();
 }
 // renders game stuff
 void Game::render() {
+
     this->window->clear(); // clears screen (no it doesnt DT clearing the screen is a myth)
                             // shhh don't let them know that Charlemagne
 
@@ -324,8 +337,7 @@ void Game::render() {
         }
     }
 
-    //this->window->draw(sprite);
-    this->window->display();
+    this->window->draw(*scoreText);
 
     // check if gameover to draw text
     if (gameOver) {
@@ -334,6 +346,9 @@ void Game::render() {
         this->window->display();
         sleep(sf::seconds(2.f));
     }
+
+    //this->window->draw(sprite);
+    this->window->display();
 }
 
 void Game::imageGeneratorLive() {
