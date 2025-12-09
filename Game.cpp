@@ -23,24 +23,36 @@ void Game::initWindow() {
 }
 //de/constructor stuffs
 Game::Game() {
+    // initialization
     this->initVars();
     this->initWindow();
     this->room = startRoom;
 
+    // sprite loading
     if (!texture.loadFromFile("sawSheet.png")){
         std::cerr << "Failed to load";
     }
     rectSourceSprite = sf::IntRect({0,0},{100, 100});
     sprite = new sf::Sprite(texture, rectSourceSprite);
 
-    // final door
+    // shape loading
     this->finalDoor.setPosition({0.f, 0.f});
     this->finalDoor.setSize({800.f, 20.f});
     this->finalDoor.setFillColor(sf::Color::Yellow);
-    // final door back
+
     this->finalDoorBack.setPosition({0.f, 580.f});
     this->finalDoorBack.setSize({800.f, 580.f});
     this->finalDoorBack.setFillColor(sf::Color::Yellow);
+
+    for (int i = 0; i < 5; i++) {
+        sf::CircleShape coin(15.f);
+        coin.setFillColor(sf::Color::Yellow);
+        coin.setOutlineThickness(4);
+        coin.setOutlineColor({255,165,0});
+        this->coins.push_back(coin);
+
+        this->coinCheck.push_back(true);
+    }
 
     // game over text stuff
     if (!gameOverFont.openFromFile("DFPOCOC.TTF")) {
@@ -89,6 +101,7 @@ void Game::pollEvents() {
 void Game::update() {
 
     // coordinate bounds for each thing on screen
+    //          after making my own room, this stuff is pretty useless but oh well
     sf::FloatRect snakeBounds = this->snorke.getSnorkeBounds();
     sf::FloatRect spriteBounds = this->sprite->getGlobalBounds();
     sf::FloatRect doorToSecond({750.f, 500.f}, {50.f, 100.f});
@@ -129,6 +142,14 @@ void Game::update() {
                 //this->window->setTitle("Second Room");
 
             }
+
+        // check if coins already taken/collided with
+        if (coinCheck[0] == true) {
+            if (snakeBounds.findIntersection(coins[0].getGlobalBounds())) {
+                snorke.scoreUp();
+                coinCheck[0] = false;
+            }
+        }
             break;
 
         case(secondRoom):
@@ -197,6 +218,12 @@ void Game::render() {
             rectangle.setOutlineThickness(3);
             rectangle.setOutlineColor(sf::Color::Blue);
             this->window->draw(rectangle);
+
+            // check if coin already taken, display if not
+            if (coinCheck[0] == true) {
+                this->coins[0].setPosition({100.f, 400.f});
+                this->window->draw(this->coins[0]);
+            }
             break;
         }
         case secondRoom: {
@@ -246,6 +273,7 @@ void Game::render() {
 
     // check if gameover to draw text
     if (gameOver) {
+        //std::cout << "Score: " << snorke.getScore() << std::endl;
         this->window->draw(*gameOverText);
         this->window->display();
         sleep(sf::seconds(2.f));

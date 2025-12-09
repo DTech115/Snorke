@@ -21,13 +21,19 @@ private:
     sf::IntRect rectSourceSprite;
     sf::Clock clock;
 
+
+    // last door shape [ngl we should've optimized exits like this if we had time
+    sf::RectangleShape finalDoor;
+    sf::RectangleShape finalDoorBack;
+
+    // coin collection
+    std::vector<sf::CircleShape> coins;
+    std::vector<bool> coinCheck;
+
     // death text stuff
     sf::Font gameOverFont;
     sf::Text* gameOverText;
 
-    // last door shape
-    sf::RectangleShape finalDoor;
-    sf::RectangleShape finalDoorBack;
 
     bool gameOver;
 

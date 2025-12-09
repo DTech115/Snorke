@@ -33,6 +33,9 @@ public:
 	void render(sf::RenderTarget* targetWindow);
 	void teleportSnake(sf::Vector2f(pos));
 
+	void scoreUp() { score++; }
+	int getScore() { return score; }
+
 	sf::FloatRect getSnorkeBounds() { return this->snake.getGlobalBounds(); }
 };
 
