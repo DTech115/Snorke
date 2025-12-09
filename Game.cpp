@@ -1,9 +1,9 @@
-//
-// Created by DT on 11/16/25.
-//
-
 #include "Game.h"
 
+#include <cmath>
+#include <ctime>
+#include <cstdlib>
+#include <sstream>
 #include <iostream>
 
 //private functions
@@ -74,6 +74,7 @@ Game::Game() {
     gameOverText = new sf::Text(gameFont);
     scoreText = new sf::Text(gameFont);
     winText = new sf::Text(gameFont);
+    timerTxt = new sf::Text(gameFont);
 
     // game over text stuff
     gameOverText->setString(" Y O U    D I E D ");
@@ -92,22 +93,27 @@ Game::Game() {
     winText->setFillColor({255, 189, 0});
     winText->setPosition({10.f, 300.f});
 
+    timerTxt->setCharacterSize(24);
+    timerTxt->setFillColor(sf::Color::White);
+    timerTxt->setPosition({10.f, 10.f});
+
 }
 Game::~Game() {
     delete this->window;
-    delete sprite;  // blud almost caused a memory leak by not adding this
+    delete sprite;  // blud almost caused a memory leak by not adding this (actually more memory usage means more brain power = better -charlie)
     delete gameOverText;
     delete scoreText;
     delete winText;
+    delete timerTxt;
 }
-
 
 //  ~~~~~~~ functions ~~~~~~~
 
 //checks if window is open/running
 bool Game::running() {
-    return this->window->isOpen();
+    //return this->window->isOpen();
     imageGeneratorLive();
+    return this->window->isOpen();
 }
 
 void Game::pollEvents() {
@@ -128,9 +134,9 @@ void Game::pollEvents() {
 }
 
 void Game::update() {
-
     // coordinate bounds for each thing on screen
     //          after making my own room, this stuff is pretty useless but oh well
+
     sf::FloatRect snakeBounds = this->snorke.getSnorkeBounds();
     sf::FloatRect spriteBounds = this->sprite->getGlobalBounds();
     sf::FloatRect doorToSecond({750.f, 500.f}, {50.f, 100.f});
@@ -147,7 +153,6 @@ void Game::update() {
         this->window->close();
         return;
     }
-
 
     // move snake
     this->snorke.update(this->window);
@@ -288,6 +293,25 @@ void Game::update() {
     // increase score
     scoreText->setString("Score: " + std::to_string(snorke.getScore()));
 
+   //sf::Time time = clockTwo.getElapsedTime();
+    sf::Time time = clock.restart();
+    countdown -= time.asSeconds();
+    std::to_string(countdown);
+    //std::cout << countdown << std::endl;
+    int currentScore = snorke.getScore();
+
+    if (currentScore > previousScore) {
+        countdown += 2;
+    }
+    previousScore = currentScore;
+    timerTxt->setString("Time: " + std::to_string((int)std::round(countdown)));
+
+    if (countdown <= 0) {
+        gameOver = true;
+        //clock.restart();
+    }
+
+
     imageGeneratorLive();
 }
 // renders game stuff
@@ -295,7 +319,7 @@ void Game::render() {
 
     this->window->clear(); // clears screen (no it doesnt DT clearing the screen is a myth)
                             // shhh don't let them know that Charlemagne
-
+                            //its in my head DT make it stop!!!
     switch (this->room) {
 
         case startRoom: {
@@ -387,6 +411,7 @@ void Game::render() {
     }
 
     this->window->draw(*scoreText);
+    this->window->draw(*timerTxt);
 
     // check if gameover to draw text
     if (gameOver) {

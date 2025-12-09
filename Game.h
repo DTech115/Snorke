@@ -1,7 +1,3 @@
-//
-// Created by DT on 11/16/25.
-//
-
 #ifndef GAME_H
 #define GAME_H
 
@@ -25,6 +21,11 @@ private:
     sf::Vector2f sawSpeed;
     bool moveRight;
 
+    //timer
+    sf::Clock clockTwo;
+    float countdown = 30.0f;
+    int previousScore = 0;
+
     // last door shape [ngl we should've optimized exits like this if we had time
     sf::RectangleShape finalDoor;
     sf::RectangleShape finalDoorBack;
@@ -39,6 +40,7 @@ private:
     sf::Text* gameOverText;
     sf::Text* scoreText;
     sf::Text* winText;
+    sf::Text* timerTxt; //DT no "text" we must "txt" !!!
 
     bool gameOver;
     bool allCoinsCollected;
@@ -57,6 +59,7 @@ public:
     ~Game(); // destructor
 
     int  MouseOnDot(float x, float y, sf::RenderWindow &renderWindow);
+
     bool running();
     void pollEvents();
     void update();
