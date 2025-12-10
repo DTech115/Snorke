@@ -294,7 +294,7 @@ void Game::update() {
     scoreText->setString("Score: " + std::to_string(snorke.getScore()));
 
    //sf::Time time = clockTwo.getElapsedTime();
-    sf::Time time = clock.restart();
+    sf::Time time = clockTwo.restart();
     countdown -= time.asSeconds();
     std::to_string(countdown);
     //std::cout << countdown << std::endl;
